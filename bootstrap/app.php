@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+            'tenant.auth' => \App\Http\Middleware\InitializeTenancyByAuthUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

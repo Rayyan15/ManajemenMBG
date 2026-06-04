@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class MenuSchedule extends Model
 {
     /** @use HasFactory<\Database\Factories\MenuScheduleFactory> */
+    use HasFactory;
+    
     protected $fillable = [
         'serving_date',
         'menu_name',

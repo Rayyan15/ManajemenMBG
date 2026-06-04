@@ -23,6 +23,8 @@ class DashboardController extends Controller
             return redirect()->route('driver.dashboard');
         } elseif ($role === 'teacher') {
             return redirect()->route('school.dashboard');
+        } elseif ($role === 'super_admin') {
+            return redirect()->route('super.dashboard');
         }
 
         return Inertia::render('Dashboard');
@@ -70,6 +72,19 @@ class DashboardController extends Controller
                 'recentIncidents' => $recentIncidents
             ],
             'chartData' => $chartData
+        ]);
+    }
+
+    public function kitchen()
+    {
+        $today = now()->toDateString();
+        
+        $schedules = MenuSchedule::with(['menuIngredients.rawMaterialCatalog', 'haccpChecklist'])
+            ->where('serving_date', $today)
+            ->get();
+
+        return Inertia::render('Dashboard/Kitchen', [
+            'schedules' => $schedules
         ]);
     }
 

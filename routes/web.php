@@ -23,39 +23,49 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Dasbor Pemilik Yayasan
-    Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
-        Route::post('/admin/incidents/{id}/status', [IncidentController::class, 'updateStatusWeb'])->name('admin.incidents.updateStatus');
+    // Dasbor Super Admin (Sentral - Tanpa Tenant)
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/super/dashboard', [\App\Http\Controllers\SuperAdminController::class, 'index'])->name('super.dashboard');
+        Route::post('/super/tenants', [\App\Http\Controllers\SuperAdminController::class, 'storeTenant'])->name('super.tenants.store');
     });
 
-    // Dasbor Manajer Dapur
-    Route::middleware('role:kitchen_manager')->group(function () {
-        Route::get('/kitchen/dashboard', [DashboardController::class, 'kitchen'])->name('kitchen.dashboard');
-        Route::post('/kitchen/haccp', [\App\Http\Controllers\Api\KitchenController::class, 'storeHaccp'])->name('kitchen.haccp');
-        Route::post('/kitchen/produce', [\App\Http\Controllers\Api\KitchenController::class, 'produce'])->name('kitchen.produce');
-    });
+    // Rute Operasional (Membutuhkan akses Tenant)
+    Route::middleware('tenant.auth')->group(function () {
+        // Dasbor Pemilik Yayasan
+        Route::middleware('role:admin')->group(function () {
+            Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
+            Route::post('/admin/incidents/{id}/status', [IncidentController::class, 'updateStatusWeb'])->name('admin.incidents.updateStatus');
+        });
 
-    // Dasbor Manajer Keuangan
-    Route::middleware('role:finance_manager')->group(function () {
-        Route::get('/finance/dashboard', [\App\Http\Controllers\FinanceController::class, 'dashboard'])->name('finance.dashboard');
-        Route::get('/finance/export-daily-report', [\App\Http\Controllers\FinanceController::class, 'exportReport'])->name('finance.exportReport');
-    });
+        // Dasbor Manajer Dapur
+        Route::middleware('role:kitchen_manager')->group(function () {
+            Route::get('/kitchen/dashboard', [DashboardController::class, 'kitchen'])->name('kitchen.dashboard');
+            Route::post('/kitchen/haccp', [\App\Http\Controllers\Api\KitchenController::class, 'storeHaccp'])->name('kitchen.haccp');
+            Route::post('/kitchen/produce', [\App\Http\Controllers\Api\KitchenController::class, 'produce'])->name('kitchen.produce');
+        });
 
-    // PWA Kurir
-    Route::middleware('role:driver')->group(function () {
-        Route::get('/driver/dashboard', [DashboardController::class, 'driver'])->name('driver.dashboard');
-        Route::post('/driver/update-status/{id}', [DashboardController::class, 'updateDriverStatus'])->name('driver.updateStatus');
-    });
+        // Dasbor Manajer Keuangan
+        Route::middleware('role:finance_manager')->group(function () {
+            Route::get('/finance/dashboard', [\App\Http\Controllers\FinanceController::class, 'dashboard'])->name('finance.dashboard');
+            Route::get('/finance/export-daily-report', [\App\Http\Controllers\FinanceController::class, 'exportReport'])->name('finance.exportReport');
+        });
 
-    // PWA Sekolah (Menggunakan role teacher)
-    Route::middleware('role:teacher')->group(function () {
-        Route::get('/school/dashboard', [DashboardController::class, 'school'])->name('school.dashboard');
-        Route::post('/school/confirm-receipt/{id}', [DashboardController::class, 'confirmReceipt'])->name('school.confirmReceipt');
-    });
+        // PWA Kurir
+        Route::middleware('role:driver')->group(function () {
+            Route::get('/driver/dashboard', [DashboardController::class, 'driver'])->name('driver.dashboard');
+            Route::post('/driver/update-status/{id}', [DashboardController::class, 'updateDriverStatus'])->name('driver.updateStatus');
+        });
 
-    // Web Route untuk Insiden dari PWA
-    Route::post('/incidents', [IncidentController::class, 'storeWeb'])->name('incidents.store');
+        // PWA Sekolah (Menggunakan role teacher)
+        Route::middleware('role:teacher')->group(function () {
+            Route::get('/school/dashboard', [DashboardController::class, 'school'])->name('school.dashboard');
+            Route::post('/school/confirm-receipt/{id}', [DashboardController::class, 'confirmReceipt'])->name('school.confirmReceipt');
+        });
+
+        // Web Route untuk Insiden dari PWA
+        Route::post('/incidents', [IncidentController::class, 'storeWeb'])->name('incidents.store');
+    });
 });
+
 
 require __DIR__.'/auth.php';

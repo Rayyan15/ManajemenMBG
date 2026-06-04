@@ -5,19 +5,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('haccp_checklists', function (Blueprint $table) {
+        Schema::create('delivery_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('partner_school_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('driver_id')->nullable();
             $table->foreignId('menu_schedule_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('kitchen_manager_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->date('check_date');
-            $table->integer('sanitation_score');
-            $table->decimal('storage_temperature', 5, 2);
-            $table->integer('cooking_standard_score');
+            $table->string('status')->index();
+            $table->datetime('delivery_time')->nullable()->index();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
     public function down(): void {
-        Schema::dropIfExists('haccp_checklists');
+        Schema::dropIfExists('delivery_logs');
     }
 };

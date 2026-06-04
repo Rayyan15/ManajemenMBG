@@ -5,18 +5,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('delivery_logs', function (Blueprint $table) {
+        Schema::create('attendance_records', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->foreignId('partner_school_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('driver_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('menu_schedule_id')->constrained()->cascadeOnDelete();
+            $table->date('date')->index();
+            $table->time('check_in_time');
+            $table->time('check_out_time')->nullable();
             $table->string('status')->index();
-            $table->datetime('delivery_time')->nullable()->index();
-            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
     public function down(): void {
-        Schema::dropIfExists('delivery_logs');
+        Schema::dropIfExists('attendance_records');
     }
 };

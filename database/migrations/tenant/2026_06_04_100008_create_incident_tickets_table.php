@@ -7,7 +7,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('incident_tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('reporter_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedBigInteger('reporter_id')->nullable();
             $table->foreignId('partner_school_id')->constrained()->cascadeOnDelete();
             $table->string('category')->index();
             $table->string('priority')->index();

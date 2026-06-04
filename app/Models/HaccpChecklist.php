@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class HaccpChecklist extends Model
 {
     /** @use HasFactory<\Database\Factories\HaccpChecklistFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'menu_schedule_id',
         'kitchen_manager_id',
