@@ -35,19 +35,20 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:admin')->group(function () {
             Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
             Route::post('/admin/incidents/{id}/status', [IncidentController::class, 'updateStatusWeb'])->name('admin.incidents.updateStatus');
+            Route::resource('admin/schools', \App\Http\Controllers\SchoolController::class)->names('admin.schools');
+            Route::resource('admin/users', \App\Http\Controllers\UserController::class)->names('admin.users');
+            Route::resource('admin/approvals', \App\Http\Controllers\ApprovalController::class)->names('admin.approvals');
         });
 
         // Dasbor Manajer Dapur
         Route::middleware('role:kitchen_manager')->group(function () {
             Route::get('/kitchen/dashboard', [DashboardController::class, 'kitchen'])->name('kitchen.dashboard');
+            Route::resource('kitchen/schedules', \App\Http\Controllers\MenuScheduleController::class)->names('kitchen.schedules');
+            Route::resource('kitchen/inventory', \App\Http\Controllers\InventoryController::class)->names('kitchen.inventory');
+            Route::resource('kitchen/stok-masuk', \App\Http\Controllers\PurchaseOrderController::class)->names('kitchen.stok-masuk');
+            Route::resource('kitchen/assignments', \App\Http\Controllers\DeliveryAssignmentController::class)->names('kitchen.assignments');
             Route::post('/kitchen/haccp', [\App\Http\Controllers\Api\KitchenController::class, 'storeHaccp'])->name('kitchen.haccp');
             Route::post('/kitchen/produce', [\App\Http\Controllers\Api\KitchenController::class, 'produce'])->name('kitchen.produce');
-        });
-
-        // Dasbor Manajer Keuangan
-        Route::middleware('role:finance_manager')->group(function () {
-            Route::get('/finance/dashboard', [\App\Http\Controllers\FinanceController::class, 'dashboard'])->name('finance.dashboard');
-            Route::get('/finance/export-daily-report', [\App\Http\Controllers\FinanceController::class, 'exportReport'])->name('finance.exportReport');
         });
 
         // PWA Kurir

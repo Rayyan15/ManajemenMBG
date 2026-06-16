@@ -4,7 +4,7 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
-import { HomeIcon, TruckIcon, RectangleGroupIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, TruckIcon, RectangleGroupIcon, ClipboardDocumentListIcon, UserGroupIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -13,10 +13,15 @@ export default function Authenticated({ user, header, children }) {
         const links = [];
         if (user.role === 'admin') {
             links.push({ name: 'Dasbor Admin', href: route('admin.dashboard'), active: route().current('admin.dashboard'), icon: HomeIcon });
-            links.push({ name: 'Inventaris', href: '#', active: false, icon: RectangleGroupIcon });
+            links.push({ name: 'Karyawan', href: route('admin.users.index'), active: route().current('admin.users.*'), icon: UserGroupIcon });
+            links.push({ name: 'Sekolah Mitra', href: route('admin.schools.index'), active: route().current('admin.schools.*'), icon: HomeIcon });
+            links.push({ name: 'Persetujuan (PO)', href: route('admin.approvals.index'), active: route().current('admin.approvals.*'), icon: CheckCircleIcon });
         } else if (user.role === 'kitchen_manager') {
             links.push({ name: 'Dasbor Dapur', href: route('kitchen.dashboard'), active: route().current('kitchen.dashboard'), icon: HomeIcon });
-            links.push({ name: 'Jadwal Menu', href: '#', active: false, icon: ClipboardDocumentListIcon });
+            links.push({ name: 'Inventaris', href: route('kitchen.inventory.index'), active: route().current('kitchen.inventory.*'), icon: RectangleGroupIcon });
+            links.push({ name: 'Stok Masuk (PO)', href: route('kitchen.stok-masuk.index'), active: route().current('kitchen.stok-masuk.*'), icon: TruckIcon });
+            links.push({ name: 'Jadwal Menu', href: route('kitchen.schedules.index'), active: route().current('kitchen.schedules.*'), icon: ClipboardDocumentListIcon });
+            links.push({ name: 'Penugasan Kurir', href: route('kitchen.assignments.index'), active: route().current('kitchen.assignments.*'), icon: TruckIcon });
         } else if (user.role === 'driver') {
             links.push({ name: 'Dasbor Kurir', href: route('driver.dashboard'), active: route().current('driver.dashboard'), icon: TruckIcon });
         } else {

@@ -18,12 +18,16 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 |
 */
 
-Route::middleware([
-    'web',
-    InitializeTenancyByDomain::class,
-    PreventAccessFromCentralDomains::class,
-])->group(function () {
-    Route::get('/', function () {
-        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
-    });
-});
+// Anda menggunakan Auth-based tenancy di routes/web.php,
+// sehingga route default dari stancl/tenancy ini dikomentari agar tidak
+// menimpa route '/' utama yang ada di routes/web.php.
+
+// Route::middleware([
+//     'web',
+//     InitializeTenancyByDomain::class,
+//     PreventAccessFromCentralDomains::class,
+// ])->group(function () {
+//     Route::get('/', function () {
+//         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
+//     });
+// });
