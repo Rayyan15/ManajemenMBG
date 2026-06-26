@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { CheckCircleIcon, XCircleIcon, DocumentTextIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
 
 export default function ApprovalIndex({ auth, movements, history }) {
-    const { post, processing } = useForm();
-
+    const [processing, setProcessing] = useState(false);
+    
     const handleAction = (id, status) => {
         if (confirm(`Anda yakin ingin ${status === 'approved' ? 'menyetujui' : 'menolak'} PO ini?`)) {
-            post(route('admin.approvals.update', id), {
-                data: { status, _method: 'PUT' },
+            setProcessing(true);
+            router.put(route('admin.approvals.update', id), { status }, {
                 preserveScroll: true,
-                onSuccess: () => alert(`PO berhasil ${status === 'approved' ? 'disetujui' : 'ditolak'}.`)
+                onSuccess: () => alert(`PO berhasil ${status === 'approved' ? 'disetujui' : 'ditolak'}.`),
+                onFinish: () => setProcessing(false)
             });
         }
     };
