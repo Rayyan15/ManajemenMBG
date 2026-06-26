@@ -51,7 +51,7 @@ class DashboardController extends Controller
                             ->where('approval_status', 'approved')
                             ->sum('total_price');
         
-        $totalMealsAllTime = MenuSchedule::where('status', 'selesai')->sum('total_portions');
+        $totalMealsAllTime = MenuSchedule::where('status', 'completed')->sum('total_portions');
         
         $costPerMeal = $totalMealsAllTime > 0 ? ($totalExpense / $totalMealsAllTime) : 0;
 

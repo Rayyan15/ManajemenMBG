@@ -14,7 +14,7 @@ export default function MenuSchedule({ auth, schedules, sppgUnits }) {
         menu_name: '',
         description: '',
         target_portions: '',
-        status: 'draft',
+        status: 'planned',
         batch_number: '',
         cooking_status: 'preparation',
     });

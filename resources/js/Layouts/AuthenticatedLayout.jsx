@@ -1,13 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { HomeIcon, TruckIcon, RectangleGroupIcon, ClipboardDocumentListIcon, UserGroupIcon, CheckCircleIcon, BuildingLibraryIcon, BuildingStorefrontIcon } from '@heroicons/react/24/outline';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+
+    useEffect(() => {
+        if (window.Echo) {
+            window.Echo.channel('system-updates')
+                .listen('SystemUpdated', (e) => {
+                    console.log('System Auto-Refresh Triggered:', e.message);
+                    router.reload({ preserveScroll: true, preserveState: true });
+                });
+        }
+
+        return () => {
+            if (window.Echo) {
+                window.Echo.leaveChannel('system-updates');
+            }
+        };
+    }, []);
 
     const getNavigationLinks = () => {
         const links = [];

@@ -28,7 +28,7 @@ class StoreMenuScheduleRequest extends FormRequest
             'menu_name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'target_portions' => 'required|integer|min:1',
-            'status' => 'required|in:draft,produksi,selesai',
+            'status' => 'required|in:planned,producing,completed',
             'batch_number' => 'nullable|string',
             'cooking_status' => 'required|in:preparation,cooking,packaging,ready',
         ];

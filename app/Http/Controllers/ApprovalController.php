@@ -42,18 +42,15 @@ class ApprovalController extends Controller
             return redirect()->back()->withErrors(['error' => 'PO ini sudah diproses.']);
         }
 
-        $movement->approval_status = $validated['status'];
-        $movement->save();
+        $movement->update(['approval_status' => $validated['status']]);
 
         if ($validated['status'] === 'approved') {
-            $material = RawMaterialCatalog::find($movement->raw_material_catalog_id);
-            if ($material) {
-                $material->current_stock += $movement->quantity;
-                $material->save();
-            }
+            $movement->raw_material_catalog->increment('current_stock', $movement->quantity);
+            broadcast(new \App\Events\SystemUpdated('PO Approval diproses'))->toOthers();
             return redirect()->back()->with('success', 'Purchase Order disetujui. Stok telah masuk ke gudang.');
         }
 
+        broadcast(new \App\Events\SystemUpdated('PO Approval diproses'))->toOthers();
         return redirect()->back()->with('success', 'Purchase Order ditolak.');
     }
 }

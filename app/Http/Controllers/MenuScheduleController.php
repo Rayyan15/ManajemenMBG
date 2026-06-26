@@ -37,6 +37,8 @@ class MenuScheduleController extends Controller
             'cooking_status' => $validated['cooking_status'],
         ]);
 
+        broadcast(new \App\Events\SystemUpdated('Kanban Baru dibuat'))->toOthers();
+
         return redirect()->back()->with('success', 'Jadwal Menu berhasil dibuat.');
     }
 
@@ -49,10 +51,12 @@ class MenuScheduleController extends Controller
         $schedule = MenuSchedule::findOrFail($id);
         $schedule->update(['cooking_status' => $validated['cooking_status']]);
 
-        // Jika pindah ke ready, ubah status utama ke selesai
+        // Jika pindah ke ready, ubah status utama ke completed
         if ($validated['cooking_status'] === 'ready') {
-            $schedule->update(['status' => 'selesai']);
+            $schedule->update(['status' => 'completed']);
         }
+
+        broadcast(new \App\Events\SystemUpdated('Status Kanban dipindah'))->toOthers();
 
         return redirect()->back()->with('success', 'Status Kanban berhasil diperbarui.');
     }

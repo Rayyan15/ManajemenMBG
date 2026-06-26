@@ -58,6 +58,8 @@ class PurchaseOrderController extends Controller
             'approval_status' => 'pending',
         ]);
 
+        broadcast(new \App\Events\SystemUpdated('PO Baru dibuat'))->toOthers();
+
         return redirect()->back()->with('success', 'Purchase Order berhasil diajukan dan sedang menunggu persetujuan Admin.');
     }
 
