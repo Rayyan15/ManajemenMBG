@@ -7,6 +7,13 @@ import { PlusIcon, ShoppingCartIcon, CheckCircleIcon, CurrencyDollarIcon, TagIco
 export default function StokMasuk({ auth, movements, materials, suppliers, sppgUnits }) {
     const [isPOModalOpen, setIsPOModalOpen] = useState(false);
     const [poStep, setPoStep] = useState(1);
+    const [isNewMaterialOpen, setIsNewMaterialOpen] = useState(false);
+
+    const newMaterialForm = useForm({
+        name: '',
+        sku: '',
+        unit_of_measurement: 'Kg'
+    });
 
     const { data, setData, post, processing, errors, reset } = useForm({
         sppg_unit_id: '',
@@ -27,6 +34,18 @@ export default function StokMasuk({ auth, movements, materials, suppliers, sppgU
                 setPoStep(1);
                 reset();
                 alert('Purchase Order berhasil diajukan.');
+            }
+        });
+    };
+
+    const submitNewMaterial = (e) => {
+        e.preventDefault();
+        newMaterialForm.post(route('kitchen.materials.store'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setIsNewMaterialOpen(false);
+                newMaterialForm.reset();
+                alert('Bahan baku baru berhasil ditambahkan.');
             }
         });
     };
@@ -209,19 +228,70 @@ export default function StokMasuk({ auth, movements, materials, suppliers, sppgU
                                 </h4>
                                 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Bahan Baku</label>
-                                    <select 
-                                        value={data.raw_material_catalog_id}
-                                        onChange={(e) => setData('raw_material_catalog_id', e.target.value)}
-                                        className="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-gray-100 focus:border-orange-500 focus:ring-orange-500"
-                                        required
-                                    >
-                                        <option value="" disabled>-- Pilih Bahan --</option>
-                                        {materials.map(mat => (
-                                            <option key={mat.id} value={mat.id}>{mat.name} ({mat.sku}) - Satuan: {mat.unit_of_measurement}</option>
-                                        ))}
-                                    </select>
-                                    {errors.raw_material_catalog_id && <p className="text-red-500 text-xs mt-1">{errors.raw_material_catalog_id}</p>}
+                                    <div className="flex justify-between items-center mb-1">
+                                        <label className="block text-sm font-medium text-gray-300">Bahan Baku</label>
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setIsNewMaterialOpen(!isNewMaterialOpen)}
+                                            className="text-orange-400 hover:text-orange-300 text-xs font-bold"
+                                        >
+                                            {isNewMaterialOpen ? 'Batal Tambah' : '+ Tambah Baru'}
+                                        </button>
+                                    </div>
+                                    
+                                    {isNewMaterialOpen ? (
+                                        <div className="bg-gray-800 p-4 rounded-xl border border-gray-600 mb-4 space-y-3">
+                                            <h5 className="text-sm font-bold text-gray-200">Tambah Bahan Baku Baru</h5>
+                                            <div>
+                                                <input 
+                                                    type="text" 
+                                                    value={newMaterialForm.data.name}
+                                                    onChange={(e) => newMaterialForm.setData('name', e.target.value)}
+                                                    className="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-sm text-gray-100"
+                                                    placeholder="Nama Bahan (contoh: Beras Merah)"
+                                                />
+                                            </div>
+                                            <div className="flex space-x-2">
+                                                <input 
+                                                    type="text" 
+                                                    value={newMaterialForm.data.sku}
+                                                    onChange={(e) => newMaterialForm.setData('sku', e.target.value)}
+                                                    className="w-1/2 bg-gray-900 border border-gray-700 rounded-lg p-2 text-sm text-gray-100"
+                                                    placeholder="SKU (Opsional)"
+                                                />
+                                                <input 
+                                                    type="text" 
+                                                    value={newMaterialForm.data.unit_of_measurement}
+                                                    onChange={(e) => newMaterialForm.setData('unit_of_measurement', e.target.value)}
+                                                    className="w-1/2 bg-gray-900 border border-gray-700 rounded-lg p-2 text-sm text-gray-100"
+                                                    placeholder="Satuan (Kg, Liter, dll)"
+                                                />
+                                            </div>
+                                            <button 
+                                                type="button"
+                                                onClick={submitNewMaterial}
+                                                disabled={newMaterialForm.processing}
+                                                className="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-2 rounded-lg text-sm transition"
+                                            >
+                                                {newMaterialForm.processing ? 'Menyimpan...' : 'Simpan Bahan Baku'}
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <select 
+                                                value={data.raw_material_catalog_id}
+                                                onChange={(e) => setData('raw_material_catalog_id', e.target.value)}
+                                                className="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-gray-100 focus:border-orange-500 focus:ring-orange-500"
+                                                required
+                                            >
+                                                <option value="" disabled>-- Pilih Bahan --</option>
+                                                {materials.map(mat => (
+                                                    <option key={mat.id} value={mat.id}>{mat.name} ({mat.sku}) - Satuan: {mat.unit_of_measurement}</option>
+                                                ))}
+                                            </select>
+                                            {errors.raw_material_catalog_id && <p className="text-red-500 text-xs mt-1">{errors.raw_material_catalog_id}</p>}
+                                        </>
+                                    )}
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4 mt-4">

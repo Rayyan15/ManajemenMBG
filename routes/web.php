@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
             Route::patch('/kitchen/schedules/{id}/status', [\App\Http\Controllers\MenuScheduleController::class, 'updateStatus'])->name('kitchen.schedules.updateStatus');
             Route::resource('kitchen/inventory', \App\Http\Controllers\InventoryController::class)->names('kitchen.inventory');
             Route::resource('kitchen/stok-masuk', \App\Http\Controllers\PurchaseOrderController::class)->names('kitchen.stok-masuk');
+            Route::post('/kitchen/materials', [\App\Http\Controllers\PurchaseOrderController::class, 'storeMaterial'])->name('kitchen.materials.store');
             Route::resource('kitchen/assignments', \App\Http\Controllers\DeliveryAssignmentController::class)->names('kitchen.assignments');
             Route::post('/kitchen/haccp', [\App\Http\Controllers\Api\KitchenController::class, 'storeHaccp'])->name('kitchen.haccp');
             Route::post('/kitchen/produce', [\App\Http\Controllers\Api\KitchenController::class, 'produce'])->name('kitchen.produce');

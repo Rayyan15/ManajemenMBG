@@ -11,11 +11,14 @@ class MenuSchedule extends Model
     use HasFactory;
     
     protected $fillable = [
+        'sppg_unit_id',
         'serving_date',
         'menu_name',
         'description',
         'total_portions',
         'status',
+        'batch_number',
+        'cooking_status',
     ];
 
     public function menuIngredients()

@@ -60,4 +60,26 @@ class PurchaseOrderController extends Controller
 
         return redirect()->back()->with('success', 'Purchase Order berhasil diajukan dan sedang menunggu persetujuan Admin.');
     }
+
+    public function storeMaterial(\Illuminate\Http\Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'sku' => 'nullable|string|max:50',
+            'unit_of_measurement' => 'required|string|max:50',
+        ]);
+
+        if (empty($validated['sku'])) {
+            $validated['sku'] = strtoupper(substr(uniqid(), -5));
+        }
+
+        RawMaterialCatalog::create([
+            'name' => $validated['name'],
+            'sku' => $validated['sku'],
+            'unit_of_measurement' => $validated['unit_of_measurement'],
+            'current_stock' => 0,
+        ]);
+
+        return redirect()->back()->with('success', 'Bahan baku baru berhasil ditambahkan.');
+    }
 }
