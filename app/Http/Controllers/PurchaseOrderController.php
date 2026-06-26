@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\InventoryMovement;
 use App\Models\RawMaterialCatalog;
+use App\Models\Supplier;
+use App\Models\SppgUnit;
 use App\Http\Requests\StorePurchaseOrderRequest;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -13,18 +15,21 @@ class PurchaseOrderController extends Controller
 {
     public function index(): Response
     {
-        // Ambil riwayat stok masuk (Purchase Orders)
-        $movements = InventoryMovement::with('raw_material_catalog')
+        $movements = InventoryMovement::with(['raw_material_catalog', 'supplier'])
             ->where('type', 'in')
             ->orderBy('date', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
 
         $materials = RawMaterialCatalog::orderBy('name')->get();
+        $suppliers = Supplier::orderBy('name')->get();
+        $sppgUnits = SppgUnit::orderBy('name')->get();
 
         return Inertia::render('Kitchen/StokMasuk', [
             'movements' => $movements,
             'materials' => $materials,
+            'suppliers' => $suppliers,
+            'sppgUnits' => $sppgUnits,
         ]);
     }
 
@@ -33,19 +38,25 @@ class PurchaseOrderController extends Controller
         $validated = $request->validated();
 
         $material = RawMaterialCatalog::findOrFail($validated['raw_material_catalog_id']);
+        
+        $totalPrice = $validated['quantity'] * $validated['unit_price'];
+        if ($validated['is_taxed']) {
+            $totalPrice = $totalPrice * 1.11; // 11% PPN
+        }
 
-        $movement = InventoryMovement::create([
+        InventoryMovement::create([
+            'sppg_unit_id' => $validated['sppg_unit_id'],
+            'supplier_id' => $validated['supplier_id'],
             'raw_material_catalog_id' => $material->id,
             'type' => 'in',
             'quantity' => $validated['quantity'],
+            'unit_price' => $validated['unit_price'],
+            'total_price' => $totalPrice,
             'reference_number' => 'PO-' . strtoupper(uniqid()),
             'date' => now()->toDateString(),
-            'notes' => 'PO via ' . $validated['vendor_name'] . ($validated['is_taxed'] ? ' (Termasuk PPN)' : '') . '. ' . ($validated['notes'] ?? ''),
-            'approval_status' => 'pending', // Menunggu persetujuan Admin
+            'notes' => 'PO diajukan. ' . ($validated['notes'] ?? ''),
+            'approval_status' => 'pending',
         ]);
-
-        // Catatan: Stok tidak ditambahkan di sini. 
-        // Stok akan bertambah ketika Admin menyetujui (Approve) di Dashboard Admin.
 
         return redirect()->back()->with('success', 'Purchase Order berhasil diajukan dan sedang menunggu persetujuan Admin.');
     }

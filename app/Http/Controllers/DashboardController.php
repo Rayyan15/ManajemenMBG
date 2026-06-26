@@ -46,6 +46,18 @@ class DashboardController extends Controller
 
         $recentIncidents = \App\Models\IncidentTicket::with(['partnerSchool', 'reporter'])->orderBy('created_at', 'desc')->take(5)->get();
 
+        // Financial & Advanced Metrics (Fase 4)
+        $totalExpense = \App\Models\InventoryMovement::where('type', 'in')
+                            ->where('approval_status', 'approved')
+                            ->sum('total_price');
+        
+        $totalMealsAllTime = MenuSchedule::where('status', 'selesai')->sum('total_portions');
+        
+        $costPerMeal = $totalMealsAllTime > 0 ? ($totalExpense / $totalMealsAllTime) : 0;
+
+        $totalFoodWasteKg = \App\Models\FoodWaste::sum('waste_weight_kg');
+        $totalSppg = \App\Models\SppgUnit::count();
+
         $chartData = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->toDateString();
@@ -69,7 +81,12 @@ class DashboardController extends Controller
                 'dailyPortions' => (int) $dailyPortions,
                 'deliveredPortions' => (int) $deliveredPortions,
                 'lowStockAlerts' => $lowStockMaterials,
-                'recentIncidents' => $recentIncidents
+                'recentIncidents' => $recentIncidents,
+                'totalExpense' => (float) $totalExpense,
+                'totalMealsAllTime' => (int) $totalMealsAllTime,
+                'costPerMeal' => (float) $costPerMeal,
+                'totalFoodWasteKg' => (float) $totalFoodWasteKg,
+                'totalSppg' => (int) $totalSppg,
             ],
             'chartData' => $chartData
         ]);

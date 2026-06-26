@@ -11,13 +11,13 @@ class ApprovalController extends Controller
 {
     public function index()
     {
-        $movements = InventoryMovement::with('raw_material_catalog')
+        $movements = InventoryMovement::with(['raw_material_catalog', 'supplier', 'sppg_unit'])
             ->where('type', 'in')
             ->where('approval_status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $history = InventoryMovement::with('raw_material_catalog')
+        $history = InventoryMovement::with(['raw_material_catalog', 'supplier', 'sppg_unit'])
             ->where('type', 'in')
             ->whereIn('approval_status', ['approved', 'rejected'])
             ->orderBy('updated_at', 'desc')

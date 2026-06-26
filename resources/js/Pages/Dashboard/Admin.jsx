@@ -29,14 +29,49 @@ export default function Admin({ auth, metrics, chartData }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-100 leading-tight">Dasbor Pemilik Yayasan</h2>}
+            header={
+                <div className="flex justify-between items-center">
+                    <h2 className="font-semibold text-xl text-gray-100 leading-tight">Dasbor Pemilik Yayasan</h2>
+                    <button 
+                        onClick={() => window.print()}
+                        className="bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-600 px-4 py-2 rounded shadow transition text-sm font-bold flex items-center"
+                    >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Cetak Laporan
+                    </button>
+                </div>
+            }
         >
             <Head title="Admin Dashboard" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     
+                    {/* Financial & Multi-SPPG Aggregation (Fase 4) */}
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+                        <div className="bg-gradient-to-br from-indigo-900 to-indigo-800 overflow-hidden shadow-sm rounded-xl p-5 border border-indigo-700">
+                            <p className="text-indigo-200 text-xs font-bold uppercase tracking-wider mb-1">Total Cabang Dapur</p>
+                            <p className="text-2xl font-bold text-white">{metrics.totalSppg} <span className="text-sm font-normal text-indigo-300">SPPG</span></p>
+                        </div>
+                        <div className="bg-gradient-to-br from-emerald-900 to-emerald-800 overflow-hidden shadow-sm rounded-xl p-5 border border-emerald-700">
+                            <p className="text-emerald-200 text-xs font-bold uppercase tracking-wider mb-1">Porsi Dibagikan (All Time)</p>
+                            <p className="text-2xl font-bold text-white">{metrics.totalMealsAllTime.toLocaleString('id-ID')}</p>
+                        </div>
+                        <div className="bg-gradient-to-br from-orange-900 to-orange-800 overflow-hidden shadow-sm rounded-xl p-5 border border-orange-700 col-span-2">
+                            <p className="text-orange-200 text-xs font-bold uppercase tracking-wider mb-1">Total Pengeluaran & Cost Per Meal</p>
+                            <div className="flex justify-between items-end">
+                                <p className="text-2xl font-bold text-white">Rp {metrics.totalExpense.toLocaleString('id-ID')}</p>
+                                <p className="text-sm text-orange-200 bg-orange-900/50 px-2 py-1 rounded">Rp {metrics.costPerMeal.toLocaleString('id-ID', {maximumFractionDigits: 0})} / porsi</p>
+                            </div>
+                        </div>
+                        <div className="bg-gradient-to-br from-red-900 to-red-800 overflow-hidden shadow-sm rounded-xl p-5 border border-red-700">
+                            <p className="text-red-200 text-xs font-bold uppercase tracking-wider mb-1">Total Food Waste</p>
+                            <p className="text-2xl font-bold text-white">{metrics.totalFoodWasteKg.toFixed(1)} <span className="text-sm font-normal text-red-300">Kg</span></p>
+                        </div>
+                    </div>
+
                     {/* Summary Cards */}
+                    <h3 className="text-lg font-bold text-gray-100 mb-2">Metrik Hari Ini</h3>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div className="bg-gray-800 overflow-hidden shadow-sm rounded-lg p-6 flex items-center border border-gray-700">
                             <div className="p-3 rounded-full bg-blue-900 bg-opacity-50 text-blue-400 mr-4">

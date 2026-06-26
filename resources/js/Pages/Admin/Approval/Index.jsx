@@ -41,7 +41,9 @@ export default function ApprovalIndex({ auth, movements, history }) {
                                         <th className="px-6 py-4 text-left font-semibold text-gray-400">No. PO</th>
                                         <th className="px-6 py-4 text-left font-semibold text-gray-400">Tanggal</th>
                                         <th className="px-6 py-4 text-left font-semibold text-gray-400">Bahan & Kuantitas</th>
-                                        <th className="px-6 py-4 text-left font-semibold text-gray-400">Vendor / Catatan</th>
+                                        <th className="px-6 py-4 text-left font-semibold text-gray-400">Supplier / Catatan</th>
+                                        <th className="px-6 py-4 text-left font-semibold text-gray-400">Total Harga</th>
+                                        <th className="px-6 py-4 text-left font-semibold text-gray-400">Dapur (SPPG)</th>
                                         <th className="px-6 py-4 text-right font-semibold text-gray-400">Keputusan</th>
                                     </tr>
                                 </thead>
@@ -54,7 +56,18 @@ export default function ApprovalIndex({ auth, movements, history }) {
                                                 <div className="font-bold text-gray-100">{mov.raw_material_catalog ? mov.raw_material_catalog.name : 'Unknown'}</div>
                                                 <div className="text-emerald-400 font-bold text-xs mt-1">+{mov.quantity} {mov.raw_material_catalog ? mov.raw_material_catalog.unit_of_measurement : ''}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-gray-400 text-xs max-w-xs">{mov.notes}</td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-gray-300 font-bold text-sm">{mov.supplier ? mov.supplier.name : '-'}</div>
+                                                <div className="text-gray-500 text-xs mt-1 max-w-xs">{mov.notes}</div>
+                                            </td>
+                                            <td className="px-6 py-4 font-bold text-gray-300">
+                                                {mov.total_price ? `Rp ${Number(mov.total_price).toLocaleString('id-ID')}` : '-'}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-xs font-bold text-blue-300 bg-blue-900/50 px-2 py-1 rounded">
+                                                    {mov.sppg_unit ? mov.sppg_unit.name : '-'}
+                                                </span>
+                                            </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex justify-end space-x-2">
                                                     <button 
@@ -76,7 +89,7 @@ export default function ApprovalIndex({ auth, movements, history }) {
                                         </tr>
                                     )) : (
                                         <tr>
-                                            <td colSpan="5" className="px-6 py-12 text-center text-gray-500">
+                                            <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
                                                 <ClipboardDocumentCheckIcon className="h-12 w-12 mx-auto mb-3 text-gray-600" />
                                                 Tidak ada PO yang menunggu persetujuan.
                                             </td>

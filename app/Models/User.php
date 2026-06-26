@@ -12,7 +12,6 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    protected $connection = 'sqlite'; // Explicitly use central DB
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -27,6 +26,7 @@ class User extends Authenticatable
         'password',
         'role',
         'tenant_id',
+        'sppg_unit_id',
     ];
 
     /**

@@ -4,7 +4,7 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
-import { HomeIcon, TruckIcon, RectangleGroupIcon, ClipboardDocumentListIcon, UserGroupIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, TruckIcon, RectangleGroupIcon, ClipboardDocumentListIcon, UserGroupIcon, CheckCircleIcon, BuildingLibraryIcon, BuildingStorefrontIcon } from '@heroicons/react/24/outline';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -13,8 +13,10 @@ export default function Authenticated({ user, header, children }) {
         const links = [];
         if (user.role === 'admin') {
             links.push({ name: 'Dasbor Admin', href: route('admin.dashboard'), active: route().current('admin.dashboard'), icon: HomeIcon });
+            links.push({ name: 'Cabang Dapur (SPPG)', href: route('admin.sppg-units.index'), active: route().current('admin.sppg-units.*'), icon: BuildingStorefrontIcon });
+            links.push({ name: 'Data Supplier', href: route('admin.suppliers.index'), active: route().current('admin.suppliers.*'), icon: TruckIcon });
             links.push({ name: 'Karyawan', href: route('admin.users.index'), active: route().current('admin.users.*'), icon: UserGroupIcon });
-            links.push({ name: 'Sekolah Mitra', href: route('admin.schools.index'), active: route().current('admin.schools.*'), icon: HomeIcon });
+            links.push({ name: 'Sekolah Mitra', href: route('admin.schools.index'), active: route().current('admin.schools.*'), icon: BuildingLibraryIcon });
             links.push({ name: 'Persetujuan (PO)', href: route('admin.approvals.index'), active: route().current('admin.approvals.*'), icon: CheckCircleIcon });
         } else if (user.role === 'kitchen_manager') {
             links.push({ name: 'Dasbor Dapur', href: route('kitchen.dashboard'), active: route().current('kitchen.dashboard'), icon: HomeIcon });

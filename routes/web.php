@@ -38,12 +38,15 @@ Route::middleware('auth')->group(function () {
             Route::resource('admin/schools', \App\Http\Controllers\SchoolController::class)->names('admin.schools');
             Route::resource('admin/users', \App\Http\Controllers\UserController::class)->names('admin.users');
             Route::resource('admin/approvals', \App\Http\Controllers\ApprovalController::class)->names('admin.approvals');
+            Route::resource('admin/sppg-units', \App\Http\Controllers\SppgUnitController::class)->names('admin.sppg-units');
+            Route::resource('admin/suppliers', \App\Http\Controllers\SupplierController::class)->names('admin.suppliers');
         });
 
         // Dasbor Manajer Dapur
         Route::middleware('role:kitchen_manager')->group(function () {
             Route::get('/kitchen/dashboard', [DashboardController::class, 'kitchen'])->name('kitchen.dashboard');
             Route::resource('kitchen/schedules', \App\Http\Controllers\MenuScheduleController::class)->names('kitchen.schedules');
+            Route::patch('/kitchen/schedules/{id}/status', [\App\Http\Controllers\MenuScheduleController::class, 'updateStatus'])->name('kitchen.schedules.updateStatus');
             Route::resource('kitchen/inventory', \App\Http\Controllers\InventoryController::class)->names('kitchen.inventory');
             Route::resource('kitchen/stok-masuk', \App\Http\Controllers\PurchaseOrderController::class)->names('kitchen.stok-masuk');
             Route::resource('kitchen/assignments', \App\Http\Controllers\DeliveryAssignmentController::class)->names('kitchen.assignments');

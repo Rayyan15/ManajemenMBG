@@ -23,9 +23,11 @@ class StorePurchaseOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'sppg_unit_id' => 'required|exists:sppg_units,id',
             'raw_material_catalog_id' => 'required|exists:raw_material_catalogs,id',
+            'supplier_id' => 'required|exists:suppliers,id',
             'quantity' => 'required|numeric|min:0.1',
-            'vendor_name' => 'required|string|max:255',
+            'unit_price' => 'required|numeric|min:0',
             'is_taxed' => 'boolean',
             'notes' => 'nullable|string',
         ];
